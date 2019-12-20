@@ -11,6 +11,7 @@ import SignInScreen from '../screens/Authentication/SignInScreen';
 //import SettingsScreen from '../screens/Profile/SettingsScreen'
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import DiaryNavigation from './DiaryNagivation';
+import ProfileContainer from '../screens/Profile/ProfileContainer';
 
 // Configurations and options for the AppTabNavigator
 const configurations = {
@@ -33,7 +34,7 @@ const configurations = {
 		}
 	},
 	Perfil: {
-		screen: ProfileScreen,
+		screen: ProfileContainer,
 		navigationOptions: {
 			//tabBarLabel: 'Settings',
 			tabBarIcon: ({ tintColor }) => (
