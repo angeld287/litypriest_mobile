@@ -36,7 +36,6 @@ target 'priestMobile2' do
 
 
 
-
   target 'priestMobile2Tests' do
     inherit! :search_paths
     # Pods for testing
