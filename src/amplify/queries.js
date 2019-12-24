@@ -100,18 +100,26 @@ export const getEvent = `query GetEvent($id: ID!) {
     location {
       items {
         id
+        location{
+          id
+          name
+        }
       }
-      nextToken
+ 
     }
     contacts {
       items {
         id
+        contact{
+          id 
+          name
+          phone
+        }
       }
-      nextToken
+     
     }
     secretary
     priest
-    createdAt
   }
 }
 `;

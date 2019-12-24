@@ -11,7 +11,7 @@ class DiaryContainer extends PureComponent {
 		error: false
 	};
 
-	componentDidMount = async () => {
+	fetchEvents = async () => {
 		try {
 			const events = await API.graphql(graphqlOperation(listEvents));
 			this.setState({
@@ -25,6 +25,12 @@ class DiaryContainer extends PureComponent {
 				error: true
 			});
 		}
+	};
+
+	componentDidMount = async () => {
+		this.props.navigation.addListener('didFocus', () => {
+			this.fetchEvents();
+		});
 	};
 
 	render() {
