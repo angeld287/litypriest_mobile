@@ -1,10 +1,14 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
-import EventItem from './EventItem';
+import CalendarContainer from '../Calendar/Calendar';
 
 const Diary = ({ events }) => {
-	return <FlatList data={events} renderItem={(event) => <EventItem key={event.item.id} event={event.item} />} />;
+	return (
+		// <View>
+		// 	<CalendarContainer events={events} />
+		// </View>
+		<CalendarContainer events={events} />
+	);
 };
 
 export default Diary;

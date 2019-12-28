@@ -1,70 +1,20 @@
 import React from 'react';
-import { Text, View, Button, KeyboardAvoidingView, Picker, Alert } from 'react-native';
+import { Text, View, Button, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import useForm from 'react-hook-form';
 import { Input } from 'react-native-elements';
-import { API, graphqlOperation } from 'aws-amplify';
 import DatePicker from './DateTimePicker';
 import moment from 'moment';
-import { updateEvent, updateEventLocations, updateEventContacts } from '../../../amplify/mutations';
+import { TextInput } from 'react-native-paper';
+import CustomPicker from '../Picker';
 
-const EventForm = ({ event, categories, locations, contacts, setEvent, navigate }) => {
-	const { register, setValue, handleSubmit, errors } = useForm({
+const EventForm = ({ event, categories, locations, contacts, setEvent, onSubmit }) => {
+	const { register, setValue, handleSubmit, errors, formState } = useForm({
 		defaultValues: {
 			...event,
-			contacts: event.contacts.contact.id,
-			location: event.location.location.id
+			contact: event.contact,
+			location: event.location
 		}
 	});
-
-	const onSubmit = async (data) => {
-		const eventData = {
-			id: event.id,
-			name: data.name,
-			description: data.description,
-			date: data.date,
-			eventCategoryId: data.category
-		};
-		const eventLocationData = {
-			id: event.location.id,
-			eventLocationsLocationId: data.location
-		};
-		const eventContactData = {
-			id: event.contacts.id,
-			eventContactsContactId: data.contacts
-		};
-		try {
-			await API.graphql(
-				graphqlOperation(updateEvent, {
-					input: eventData
-				})
-			);
-			await API.graphql(
-				graphqlOperation(updateEventLocations, {
-					input: eventLocationData
-				})
-			);
-			await API.graphql(
-				graphqlOperation(updateEventContacts, {
-					input: eventContactData
-				})
-			);
-
-			Alert.alert('actualizado correctamente', '', [
-				{
-					text: 'OK',
-					onPress: () => {
-						navigate('Home');
-					}
-				}
-			]);
-		} catch (error) {
-			Alert.alert('Ha ocurrido un error', 'Intentelo nuevamente', [
-				{
-					text: 'OK'
-				}
-			]);
-		}
-	};
 
 	const handleDateChange = (value) => {
 		if (value.type === 'set') {
@@ -79,37 +29,46 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, navigate 
 
 	return (
 		<KeyboardAvoidingView>
-			<Input
+			<TextInput
 				ref={register({ name: 'name' })}
 				onChangeText={(text) => setValue('name', text)}
-				placeholder="Nombre del evento"
+				label="Nombre del evento"
 				defaultValue={event.name}
+				mode="outlined"
+				autoCompleteType="off"
+				style={styles.textInput}
+				theme={{
+					colors: {
+						primary: '#68c462'
+					}
+				}}
 			/>
 			{errors.firstName && <Text>This is required.</Text>}
 
-			<Input
+			<TextInput
 				ref={register({ name: 'description' })}
 				onChangeText={(text) => setValue('description', text)}
-				placeholder="Descripcion del evento"
+				label="Descripcion del evento"
 				defaultValue={event.description}
+				mode="outlined"
+				autoCompleteType="off"
+				style={styles.textInput}
+				theme={{
+					colors: {
+						primary: '#68c462'
+					}
+				}}
 			/>
 			{errors.description && <Text>This is required.</Text>}
 
-			<Picker
-				selectedValue={event.category}
+			<CustomPicker
 				ref={register({ name: 'category' })}
-				onValueChange={(itemValue) => {
-					setEvent({
-						...event,
-						category: itemValue
-					});
-					setValue('category', itemValue);
-				}}
-			>
-				{categories.map((category) => (
-					<Picker.Item key={category.id} label={category.name} value={category.id} />
-				))}
-			</Picker>
+				setEvent={setEvent}
+				setValue={setValue}
+				elements={categories}
+				event={event}
+				propertyName="category"
+			/>
 
 			<DatePicker
 				ref={register({ name: 'date' })}
@@ -118,7 +77,16 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, navigate 
 				register={register}
 			/>
 
-			<Picker
+			<CustomPicker
+				ref={register({ name: 'contact' })}
+				setEvent={setEvent}
+				setValue={setValue}
+				elements={contacts}
+				event={event}
+				propertyName="contact"
+			/>
+
+			{/* <Picker
 				selectedValue={event.contacts.contact.id}
 				ref={register({ name: 'contacts' })}
 				onValueChange={(itemValue) => {
@@ -136,9 +104,9 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, navigate 
 				}}
 			>
 				{contacts.map((contact) => <Picker.Item key={contact.id} label={contact.name} value={contact.id} />)}
-			</Picker>
+			</Picker> */}
 
-			<Picker
+			{/* <Picker
 				selectedValue={event.location.location.id}
 				ref={register({ name: 'location' })}
 				onValueChange={(itemValue) => {
@@ -158,13 +126,29 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, navigate 
 				{locations.map((location) => (
 					<Picker.Item key={location.id} label={location.name} value={location.id} />
 				))}
-			</Picker>
+			</Picker> */}
+
+			<CustomPicker
+				ref={register({ name: 'location' })}
+				setEvent={setEvent}
+				setValue={setValue}
+				elements={locations}
+				event={event}
+				propertyName="location"
+			/>
 
 			<View>
-				<Button onPress={handleSubmit(onSubmit)} title="Guardar" />
+				<Button onPress={handleSubmit(onSubmit)} disabled={formState.isSubmitting} title="Guardar" />
 			</View>
 		</KeyboardAvoidingView>
 	);
 };
+
+const styles = StyleSheet.create({
+	textInput: {
+		backgroundColor: 'white',
+		marginBottom: 10
+	}
+});
 
 export default EventForm;

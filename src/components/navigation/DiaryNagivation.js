@@ -2,6 +2,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import DiaryContainer from '../screens/Diary/DiaryContainer';
 import EventContainer from '../screens/Event/EventContainer';
 import EditEventContainer from '../screens/Event/EditEventContainer';
+import DayContainer from '../screens/Diary/DayContainer';
+import NewEventContainer from '../screens/Event/NewEvent/NewEventContainer';
 
 const DiaryNavigation = createStackNavigator(
 	{
@@ -11,8 +13,14 @@ const DiaryNavigation = createStackNavigator(
 		Event: {
 			screen: EventContainer
 		},
+		NewEvent: {
+			screen: NewEventContainer
+		},
 		EditEvent: {
 			screen: EditEventContainer
+		},
+		Day: {
+			screen: DayContainer
 		}
 	},
 	{

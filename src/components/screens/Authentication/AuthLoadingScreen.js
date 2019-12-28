@@ -3,6 +3,7 @@ import { StyleSheet, View, ActivityIndicator } from 'react-native';
 
 // AWS Amplify modular import
 import Auth from '@aws-amplify/auth';
+import Spinner from '../../ActivityIndicator';
 
 export default class AuthLoadingScreen extends React.Component {
 	state = {
@@ -29,18 +30,6 @@ export default class AuthLoadingScreen extends React.Component {
 			});
 	};
 	render() {
-		return (
-			<View style={styles.container}>
-				<ActivityIndicator size="large" color="#302D58" />
-			</View>
-		);
+		return <Spinner />;
 	}
 }
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center'
-	}
-});

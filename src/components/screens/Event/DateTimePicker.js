@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Platform, TouchableOpacity } from 'react-native';
+import { Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
@@ -27,10 +28,21 @@ export default class DatePicker extends Component {
 		return (
 			<View>
 				<TouchableOpacity onPress={this.showDatePicker}>
-					<View style={{ height: 50 }}>
-						<Text>{moment(this.props.date).format('DD/MM/YYYY')}</Text>
+					<View
+						style={{
+							alignContent: 'flex-start',
+							borderWidth: 1,
+							borderColor: 'gray',
+							height: 55,
+							justifyContent: 'center',
+							borderRadius: 5,
+							paddingHorizontal: 15
+						}}
+					>
+						<Text style={{ fontSize: 15 }}>{moment(this.props.date).format('DD/MM/YYYY')}</Text>
 					</View>
 				</TouchableOpacity>
+
 				{this.state.show && (
 					<DateTimePicker
 						value={moment(this.props.date).toDate()}

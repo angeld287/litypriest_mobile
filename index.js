@@ -3,7 +3,8 @@
 */
 
 import * as React from 'react';
-import { AppRegistry, YellowBox } from 'react-native';
+import { AppRegistry, YellowBox, StatusBar, View } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
 import App from './App';
 
 import { name as appName } from './app.json';
@@ -13,9 +14,12 @@ YellowBox.ignoreWarnings([ 'Require cycle' ]);
 class Main extends React.Component {
 	render() {
 		return (
-			<ErrorBoundary>
-				<App />
-			</ErrorBoundary>
+			<PaperProvider>
+				<View style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
+					<StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+					<App />
+				</View>
+			</PaperProvider>
 		);
 	}
 }

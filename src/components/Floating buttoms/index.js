@@ -23,7 +23,18 @@ export default class FloattingButtons extends React.Component {
 							label: action.label,
 							onPress: action.onPress
 						}))}
-						onStateChange={({ open }) => this.setState({ open })}
+						onStateChange={({ open }) => {
+							if (fab.actions.length > 0) {
+								this.setState({ open });
+							}
+						}}
+						onPress={() => {
+							if (fab.onPress) {
+								if (!this.state.open) {
+									fab.onPress();
+								}
+							}
+						}}
 					/>
 				</Portal>
 			</Provider>

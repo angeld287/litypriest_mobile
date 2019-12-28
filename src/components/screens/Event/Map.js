@@ -7,20 +7,6 @@ import { Text } from 'native-base';
 const { height } = Dimensions.get('screen');
 
 class Map extends Component {
-	// componentDidMount = () => {
-	// 	Axios.get(
-	// 		`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
-	// 			`${this.props.location}, santo domingo`
-	// 		)}&key=AIzaSyCyw0xtlbcJiaRUDB3bNWbkcW2IJWprrbc`
-	// 	).then((data) => {
-	// 		this.setState({
-	// 			...this.state,
-	// 			lat: data.data.results[0].geometry.location.lat,
-	// 			lng: data.data.results[0].geometry.location.lng
-	// 		});
-	// 	});
-	// };
-
 	render() {
 		const { lat, lng } = this.props.location;
 		return (
@@ -45,7 +31,7 @@ class Map extends Component {
 
 const styles = StyleSheet.create({
 	mapView: {
-		height: height * 0.3
+		height: height * 0.5
 	}
 });
 
