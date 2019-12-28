@@ -5,6 +5,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import { getEvent } from '../../../amplify/queries';
 import { deleteEvent } from '../../../amplify/mutations';
 import Axios from 'axios';
+import Spinner from '../../ActivityIndicator';
 
 class EventContainer extends Component {
 	state = {
@@ -102,7 +103,7 @@ class EventContainer extends Component {
 	};
 
 	render() {
-		if (this.state.loading) return <Text>Cargando...</Text>;
+		if (this.state.loading) return <Spinner />;
 		if (this.state.error) return <Text>Error</Text>;
 		return <Event event={this.state.event} fab={this.floattingButtonData} />;
 	}

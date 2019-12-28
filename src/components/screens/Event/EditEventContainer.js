@@ -1,12 +1,14 @@
 import React from 'react';
 import EventForm from './EventForm';
-import { Text } from 'react-native';
+import { Text, Alert } from 'react-native';
 import { API, graphqlOperation } from 'aws-amplify';
 import { getEvent, listCategorys, listContacts, listLocations } from '../../../amplify/queries';
+import { updateEvent, updateEventLocations, updateEventContacts } from '../../../amplify/mutations';
 
 export default function EditEventContainer(props) {
 	const { id } = props.navigation.state.params;
 	const [ event, setEvent ] = React.useState({});
+	const [ relationKeys, setRelationKeys ] = React.useState({});
 	const [ categories, setCategories ] = React.useState([]);
 	const [ contacts, setContacts ] = React.useState([]);
 	const [ locations, setLocations ] = React.useState([]);
@@ -28,16 +30,20 @@ export default function EditEventContainer(props) {
 					fetchLocations()
 				]);
 
-				setEvent({
-					...eventAPI.data.getEvent,
-					category: eventAPI.data.getEvent.category.id,
-					contacts: eventAPI.data.getEvent.contacts.items[0],
-					location: eventAPI.data.getEvent.location.items[0]
-				});
-
 				setCategories(categoriesAPI.data.listCategorys.items);
 				setContacts(contactsAPI.data.listContacts.items);
 				setLocations(locationsAPI.data.listLocations.items);
+				console.log(eventAPI);
+				setRelationKeys({
+					locationKey: eventAPI.data.getEvent.location.items[0].id,
+					contactKey: eventAPI.data.getEvent.contacts.items[0].id
+				});
+				setEvent({
+					...eventAPI.data.getEvent,
+					category: eventAPI.data.getEvent.category.id,
+					contact: eventAPI.data.getEvent.contacts.items[0].contact.id,
+					location: eventAPI.data.getEvent.location.items[0].location.id
+				});
 				setLoading(false);
 			};
 
@@ -51,9 +57,62 @@ export default function EditEventContainer(props) {
 		[ id ]
 	);
 
+	const onSubmit = async (data) => {
+		console.log(data);
+		const eventData = {
+			id: event.id,
+			name: data.name,
+			description: data.description,
+			date: data.date,
+			eventCategoryId: data.category
+		};
+		const eventLocationData = {
+			id: relationKeys.locationKey,
+			eventLocationsLocationId: data.location
+		};
+		const eventContactData = {
+			id: relationKeys.contactKey,
+			eventContactsContactId: data.contact
+		};
+		try {
+			await API.graphql(
+				graphqlOperation(updateEvent, {
+					input: eventData
+				})
+			);
+
+			await API.graphql(
+				graphqlOperation(updateEventLocations, {
+					input: eventLocationData
+				})
+			);
+			console.log('as');
+			await API.graphql(
+				graphqlOperation(updateEventContacts, {
+					input: eventContactData
+				})
+			);
+
+			Alert.alert('actualizado correctamente', '', [
+				{
+					text: 'OK',
+					onPress: () => {
+						props.navigation.navigate('Home');
+					}
+				}
+			]);
+		} catch (error) {
+			Alert.alert('Ha ocurrido un error', 'Intentelo nuevamente', [
+				{
+					text: 'OK'
+				}
+			]);
+		}
+	};
+
 	if (loading) return <Text>Cargando</Text>;
 	if (error) return <Text>Error</Text>;
-
+	console.log(event);
 	return (
 		<EventForm
 			event={event}
@@ -61,7 +120,8 @@ export default function EditEventContainer(props) {
 			contacts={contacts}
 			locations={locations}
 			setEvent={setEvent}
-			navigate={props.navigation.navigate}
+			onSubmit={onSubmit}
+			// navigate={props.navigation.navigate}
 		/>
 	);
 }

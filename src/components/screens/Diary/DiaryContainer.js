@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import Diary from './Diary';
-import { Text } from 'react-native';
+import { Text, ActivityIndicator } from 'react-native';
 import { API, graphqlOperation } from 'aws-amplify';
 import { listEvents } from '../../../amplify/queries';
+import Spinner from '../../ActivityIndicator';
 
 class DiaryContainer extends PureComponent {
 	state = {
@@ -28,13 +29,14 @@ class DiaryContainer extends PureComponent {
 	};
 
 	componentDidMount = async () => {
+		this.fetchEvents();
 		this.props.navigation.addListener('didFocus', () => {
 			this.fetchEvents();
 		});
 	};
 
 	render() {
-		if (this.state.loading) return <Text>Cargando</Text>;
+		if (this.state.loading) return <Spinner />;
 		if (this.state.error) return <Text>Error</Text>;
 		return <Diary events={this.state.events} />;
 	}
