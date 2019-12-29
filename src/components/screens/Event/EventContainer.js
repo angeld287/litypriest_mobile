@@ -22,13 +22,13 @@ class EventContainer extends Component {
 					id: this.props.navigation.state.params.id
 				})
 			);
-			console.log(event);
+			//console.log(event);
 			const locationData = await Axios.get(
 				`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
 					`${event.data.getEvent.location.items[0].location.name}, santo domingo`
 				)}&key=AIzaSyCyw0xtlbcJiaRUDB3bNWbkcW2IJWprrbc`
 			);
-			console.log(locationData);
+			//console.log(locationData);
 			// .then((data) => {
 			// 	this.setState({
 			// 		...this.state,
@@ -68,8 +68,8 @@ class EventContainer extends Component {
 	};
 
 	handleDelete = () => {
-		console.log('Pressed borrar');
-		Alert.alert('Esta seguro?', 'El evento eliminado no se puede recuperar', [
+		//console.log('Pressed borrar');
+		Alert.alert('¿Está seguro?', 'El evento eliminado no se puede recuperar', [
 			{
 				text: 'Si',
 				onPress: () => this.deleteEvent()

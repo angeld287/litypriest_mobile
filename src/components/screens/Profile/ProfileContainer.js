@@ -13,10 +13,7 @@ export class ProfileContainer extends Component {
 		await Alert.alert(
 			'Cerrar Sesion',
 			'Estas seguro(a) que deseas Cerrar Sesion?',
-			[
-				{ text: 'Cancelar', onPress: () => console.log('Canceled'), style: 'cancel' },
-				{ text: 'OK', onPress: () => this.signOut() }
-			],
+			[ { text: 'Cancelar', onPress: () => {}, style: 'cancel' }, { text: 'OK', onPress: () => this.signOut() } ],
 			{ cancelable: false }
 		);
 	};
@@ -24,10 +21,12 @@ export class ProfileContainer extends Component {
 	signOut = async () => {
 		await Auth.signOut()
 			.then(() => {
-				console.log('Sign out complete');
+				//console.log('Sign out complete');
 				this.props.navigation.navigate('Authloading');
 			})
-			.catch((err) => console.log('Error while signing out!', err));
+			.catch((err) => {
+				/* console.log('Error while signing out!', err) */
+			});
 	};
 
 	componentDidMount = () => {
