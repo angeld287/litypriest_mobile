@@ -43,8 +43,8 @@ const Event = ({ event, fab }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#fafafa'
+		flex: 1
+		//	backgroundColor: '#fafafa'
 	},
 	dataContainer: {
 		paddingHorizontal: 15,
