@@ -24,7 +24,9 @@ export default class AuthLoadingScreen extends React.Component {
 				GLOBAL.USER_ROLL = user.signInUserSession.accessToken.payload['cognito:groups'][0];
 				this.setState({ userToken: user.signInUserSession.accessToken.jwtToken });
 			})
-			.catch((err) => console.log(err))
+			.catch((err) => {
+				/* console.log(err) */
+			})
 			.finally(() => {
 				this.props.navigation.navigate(this.state.userToken ? 'App' : 'Auth');
 			});

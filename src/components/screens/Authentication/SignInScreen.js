@@ -44,16 +44,16 @@ export default class SignInScreen extends React.Component {
 						this.props.navigation.navigate('Authloading');
 					})
 					.catch((err) => {
-						console.log('There was an error: ' + err);
+						//console.log('There was an error: ' + err);
 						this._stopLoading();
 					});
 			})
 			.catch((err) => {
 				if (!err.message) {
-					console.log('Error de incio de sesion: ', err);
+					//console.log('Error de incio de sesion: ', err);
 					Alert.alert('Error de incio de sesion: ', err);
 				} else {
-					console.log('Error de incio de sesion: ', err.message);
+					//console.log('Error de incio de sesion: ', err.message);
 					Alert.alert('Error de incio de sesion: ', err.message);
 				}
 				this._stopLoading();

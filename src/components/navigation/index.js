@@ -7,6 +7,7 @@ import SignInScreen from '../screens/Authentication/SignInScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import DiaryNavigation from './DiaryNagivation';
 import ProfileContainer from '../screens/Profile/ProfileContainer';
+import SearchContainer from '../screens/Search/SearchContainer';
 
 // Configurations and options for the AppTabNavigator
 const configurations = {
@@ -20,7 +21,7 @@ const configurations = {
 		}
 	},
 	Buscar: {
-		screen: ProfileScreen,
+		screen: SearchContainer,
 		navigationOptions: {
 			tabBarLabel: 'Consultas',
 			tabBarIcon: ({ tintColor }) => (

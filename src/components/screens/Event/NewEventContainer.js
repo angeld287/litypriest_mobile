@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Text, View, Alert } from 'react-native';
-import EventForm from './NewEventForm';
+import EventForm from './EventForm';
 import { API, graphqlOperation } from 'aws-amplify';
-import { listCategorys, listContacts, listLocations } from '../../../../amplify/queries';
-import { createEvent, createEventLocations, createEventContacts } from '../../../../amplify/mutations';
-import Spinner from '../../../ActivityIndicator';
+import { listCategorys, listContacts, listLocations } from '../../../amplify/queries';
+import { createEvent, createEventLocations, createEventContacts } from '../../../amplify/mutations';
+import Spinner from '../../ActivityIndicator';
 
 const NewEventContainer = ({ navigation }) => {
 	const [ event, setEvent ] = React.useState({});
@@ -94,7 +94,7 @@ const NewEventContainer = ({ navigation }) => {
 				}
 			]);
 		} catch (error) {
-			console.log(error);
+			//console.log(error);
 			Alert.alert('Ha ocurrido un error', 'Intentelo nuevamente', [
 				{
 					text: 'OK'
@@ -114,6 +114,7 @@ const NewEventContainer = ({ navigation }) => {
 			locations={locations}
 			setEvent={setEvent}
 			onSubmit={onSubmit}
+			action="create"
 		/>
 	);
 };

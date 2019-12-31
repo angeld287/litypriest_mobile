@@ -4,6 +4,7 @@ import { Text, Alert } from 'react-native';
 import { API, graphqlOperation } from 'aws-amplify';
 import { getEvent, listCategorys, listContacts, listLocations } from '../../../amplify/queries';
 import { updateEvent, updateEventLocations, updateEventContacts } from '../../../amplify/mutations';
+import Spinner from '../../ActivityIndicator';
 
 export default function EditEventContainer(props) {
 	const { id } = props.navigation.state.params;
@@ -33,7 +34,7 @@ export default function EditEventContainer(props) {
 				setCategories(categoriesAPI.data.listCategorys.items);
 				setContacts(contactsAPI.data.listContacts.items);
 				setLocations(locationsAPI.data.listLocations.items);
-				console.log(eventAPI);
+				//console.log(eventAPI);
 				setRelationKeys({
 					locationKey: eventAPI.data.getEvent.location.items[0].id,
 					contactKey: eventAPI.data.getEvent.contacts.items[0].id
@@ -58,7 +59,7 @@ export default function EditEventContainer(props) {
 	);
 
 	const onSubmit = async (data) => {
-		console.log(data);
+		//console.log(data);
 		const eventData = {
 			id: event.id,
 			name: data.name,
@@ -86,7 +87,7 @@ export default function EditEventContainer(props) {
 					input: eventLocationData
 				})
 			);
-			console.log('as');
+
 			await API.graphql(
 				graphqlOperation(updateEventContacts, {
 					input: eventContactData
@@ -110,9 +111,9 @@ export default function EditEventContainer(props) {
 		}
 	};
 
-	if (loading) return <Text>Cargando</Text>;
+	if (loading) return <Spinner />;
 	if (error) return <Text>Error</Text>;
-	console.log(event);
+
 	return (
 		<EventForm
 			event={event}
@@ -121,6 +122,7 @@ export default function EditEventContainer(props) {
 			locations={locations}
 			setEvent={setEvent}
 			onSubmit={onSubmit}
+			action="update"
 			// navigate={props.navigation.navigate}
 		/>
 	);
