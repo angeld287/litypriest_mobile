@@ -36,14 +36,38 @@ export default function EditEventContainer(props) {
 				setLocations(locationsAPI.data.listLocations.items);
 				//console.log(eventAPI);
 				setRelationKeys({
-					locationKey: eventAPI.data.getEvent.location.items[0].id,
-					contactKey: eventAPI.data.getEvent.contacts.items[0].id
+					locationKey: () => {
+						if (eventAPI.data.getEvent.location.items.length !== 0) {
+							return eventAPI.data.getEvent.location.items[0].id;
+						} else {
+							return '';
+						}
+					},
+					contactKey: () => {
+						if (eventAPI.data.getEvent.contacts.items.length !== 0) {
+							return eventAPI.data.getEvent.contacts.items[0].id;
+						} else {
+							return '';
+						}
+					}
 				});
 				setEvent({
 					...eventAPI.data.getEvent,
 					category: eventAPI.data.getEvent.category.id,
-					contact: eventAPI.data.getEvent.contacts.items[0].contact.id,
-					location: eventAPI.data.getEvent.location.items[0].location.id
+					contact: () => {
+						if (eventAPI.data.getEvent.contacts.items.length !== 0) {
+							return eventAPI.data.getEvent.contacts.items[0].contact.id;
+						} else {
+							return '';
+						}
+					},
+					location: () => {
+						if (eventAPI.data.getEvent.location.items.length !== 0) {
+							return eventAPI.data.getEvent.location.items[0].location.id;
+						} else {
+							return '';
+						}
+					}
 				});
 				setLoading(false);
 			};

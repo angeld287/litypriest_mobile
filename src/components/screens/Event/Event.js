@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import Map from './Map';
 import FloatingButtons from '../../Floating buttoms';
 import moment from 'moment';
 import { Icon } from 'react-native-elements';
 
 const Event = ({ event, fab }) => {
+	console.log(event);
 	return (
 		<View style={{ ...styles.container }}>
 			<Map location={event.location.location} />
-			<View style={{ ...styles.dataContainer, flex: 1 }}>
+			<ScrollView style={{ ...styles.dataContainer }}>
 				<View style={{ alignItems: 'flex-end' }}>
 					<Text style={{ fontSize: 17, textDecorationLine: 'underline' }}>
 						{moment(event.date).format('DD/MM/YYYY')}
@@ -18,7 +19,11 @@ const Event = ({ event, fab }) => {
 				<Text style={styles.eventName}>{event.name}</Text>
 				<View style={{ flexDirection: 'row' }}>
 					<Icon name="md-book" size={24} type="ionicon" color="#2196f3" />
-					<Text style={styles.propertyContainer}>{event.description}</Text>
+					{event.description ? (
+						<Text style={styles.propertyContainer}>{event.description}</Text>
+					) : (
+						<Text>No tiene descripción</Text>
+					)}
 				</View>
 				<View style={{ flexDirection: 'row' }}>
 					<Icon name="md-pin" type="ionicon" size={25} color="#f44336" />
@@ -31,11 +36,15 @@ const Event = ({ event, fab }) => {
 				<View style={{ flexDirection: 'row' }}>
 					<Icon name="md-contact" size={24} type="ionicon" color="#e91e63" />
 					<Text style={styles.propertyContainer}>
-						<Text style={styles.propertyName}>Contacto:</Text> {event.contacts.items[0].contact.name} -{' '}
-						{event.contacts.items[0].contact.phone}
+						<Text style={styles.propertyName}>Contacto:</Text>{' '}
+						{event.contacts.items.length !== 0 ? (
+							`${event.contacts.items[0].contact.name} ${event.contacts.items[0].contact.phone}`
+						) : (
+							<Text>No tiene contacto</Text>
+						)}
 					</Text>
 				</View>
-			</View>
+			</ScrollView>
 			<FloatingButtons fab={fab} />
 		</View>
 	);
@@ -47,8 +56,8 @@ const styles = StyleSheet.create({
 		//	backgroundColor: '#fafafa'
 	},
 	dataContainer: {
-		paddingHorizontal: 15,
-		alignItems: 'stretch'
+		paddingHorizontal: 15
+		//alignItems: 'stretch'
 	},
 	eventName: {
 		fontSize: 30,
