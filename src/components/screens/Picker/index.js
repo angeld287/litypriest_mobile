@@ -37,11 +37,13 @@ class CustomPicker extends Component {
 							}}
 						>
 							<Text style={{ fontSize: 15 }}>
-								{
+								{this.props.event[this.props.propertyName] === '' ? (
+									<Text>No tiene</Text>
+								) : (
 									this.props.elements.find(
 										(element) => element.id === this.props.event[this.props.propertyName]
 									).name
-								}
+								)}
 							</Text>
 						</View>
 					</TouchableOpacity>
@@ -49,6 +51,11 @@ class CustomPicker extends Component {
 					<Portal>
 						<Dialog visible={this.state.visible} onDismiss={this._hideDialog}>
 							<Dialog.Content>
+								<TouchableOpacity onPress={() => this.onChangeValue('')}>
+									<View style={{ paddingVertical: 10, paddingHorizontal: 7 }}>
+										<Text style={{ fontSize: 17, lineHeight: 20, maxHeight: 20 }}>No tiene</Text>
+									</View>
+								</TouchableOpacity>
 								{this.props.elements.map((element) => (
 									<TouchableOpacity onPress={() => this.onChangeValue(element.id)} key={element.id}>
 										<View style={{ paddingVertical: 10, paddingHorizontal: 7 }}>

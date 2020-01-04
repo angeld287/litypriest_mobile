@@ -20,7 +20,7 @@ class DiaryContainer extends PureComponent {
 				loading: false
 			});
 		} catch (error) {
-			//console.log(error);
+			console.log(error);
 			this.setState({
 				loading: false,
 				error: true
