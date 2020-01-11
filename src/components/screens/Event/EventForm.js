@@ -120,7 +120,7 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, onSubmit,
 					<Button
 						loading={formState.isSubmitting}
 						onPress={handleSubmit(onSubmit)}
-						//disabled={formState.isSubmitting || formState.isSubmitted}
+						disabled={formState.isSubmitting || formState.isSubmitted}
 						title={action === 'update' ? 'Guardar' : 'Crear'}
 					/>
 				</View>

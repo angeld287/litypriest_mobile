@@ -26,7 +26,7 @@ const Event = ({ event, fab }) => {
 					)}
 				</View>
 				<View style={{ flexDirection: 'row' }}>
-					<Icon name="md-time" type="ionicon" size={25} />
+					<Icon name="md-time" type="ionicon" size={25} color="#FFC107" />
 					<Text style={styles.propertyContainer}>{event.duration} horas</Text>
 				</View>
 				<Divider style={{ backgroundColor: '#e9e9e9' }} />
@@ -53,6 +53,7 @@ const Event = ({ event, fab }) => {
 					<Icon name="md-key" size={24} type="ionicon" color="#009688" />
 					<Text style={styles.propertyContainer}>{event.category.name}</Text>
 				</View>
+				<Divider style={{ backgroundColor: '#e9e9e9' }} />
 				<View>
 					<View style={{ flexDirection: 'row' }}>
 						<Icon name="md-contact" size={24} type="ionicon" color="#e91e63" />
@@ -62,7 +63,8 @@ const Event = ({ event, fab }) => {
 						<View>
 							{event.contacts.items.map((contact) => (
 								<Text key={contact.id}>
-									- {contact.contact.name} - {contact.contact.phone}
+									<Text style={{ fontWeight: 'bold' }}>{contact.contact.name}</Text> -{' '}
+									{contact.contact.phone}
 								</Text>
 							))}
 						</View>
