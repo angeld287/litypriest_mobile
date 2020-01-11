@@ -16,7 +16,6 @@ class EventContainer extends Component {
 
 	fetchEvent = async () => {
 		try {
-			//console.log(this.props.navigation.state.params.id);
 			const event = await API.graphql(
 				graphqlOperation(getEvent, {
 					id: this.props.navigation.state.params.id
@@ -25,25 +24,17 @@ class EventContainer extends Component {
 			//console.log(event);
 			const locationData = await Axios.get(
 				`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
-					`${event.data.getEvent.location.items[0].location.name}, santo domingo`
+					`${event.data.getEvent.location.name}`
 				)}&key=AIzaSyCyw0xtlbcJiaRUDB3bNWbkcW2IJWprrbc`
 			);
-			//console.log(locationData);
-			// .then((data) => {
-			// 	this.setState({
-			// 		...this.state,
-			// 		lat: data.data.results[0].geometry.location.lat,
-			// 		lng: data.data.results[0].geometry.location.lng
-			// 	});
-			// });
 
 			this.setState({
 				loading: false,
 				event: {
 					...event.data.getEvent,
 					location: {
-						name: event.data.getEvent.location.items[0].location.name,
-						location: {
+						...event.data.getEvent.location,
+						coordinates: {
 							lat: locationData.data.results[0].geometry.location.lat,
 							lng: locationData.data.results[0].geometry.location.lng
 						}
@@ -51,6 +42,7 @@ class EventContainer extends Component {
 				}
 			});
 		} catch (error) {
+			// console.log(error);
 			this.setState({
 				loading: false,
 				error: true

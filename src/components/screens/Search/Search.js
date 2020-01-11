@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TextInput } from 'react-native';
 import EventItem from '../Diary/EventItem';
+import moment from 'moment';
 
 const Search = ({ events, filter, filterEvents }) => {
 	var currentDate = '';
@@ -16,7 +17,9 @@ const Search = ({ events, filter, filterEvents }) => {
 							currentDate = event.date;
 							return (
 								<React.Fragment key={event.id}>
-									<Text style={{ marginTop: 5, fontSize: 15, color: 'gray' }}>{event.date}</Text>
+									<Text style={{ marginTop: 5, fontSize: 15, color: 'gray' }}>
+										{moment(event.date).format('DD-MM-YYYY')}
+									</Text>
 									<EventItem event={event} />
 								</React.Fragment>
 							);

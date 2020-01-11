@@ -1,19 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, StatusBar, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Map from './Map';
 import FloatingButtons from '../../Floating buttoms';
 import moment from 'moment';
-import { Icon } from 'react-native-elements';
+import { Icon, Badge, Divider } from 'react-native-elements';
 
 const Event = ({ event, fab }) => {
-	console.log(event);
+	// console.log(event.date);
 	return (
 		<View style={{ ...styles.container }}>
-			<Map location={event.location.location} />
+			<Map location={event.location.coordinates} />
 			<ScrollView style={{ ...styles.dataContainer }}>
 				<View style={{ alignItems: 'flex-end' }}>
 					<Text style={{ fontSize: 17, textDecorationLine: 'underline' }}>
-						{moment(event.date).format('DD/MM/YYYY')}
+						{moment(event.date.replace('Z', '')).format('dddd DD/MM/YYYY [a las] hh:mm A')}
 					</Text>
 				</View>
 				<Text style={styles.eventName}>{event.name}</Text>
@@ -26,23 +26,49 @@ const Event = ({ event, fab }) => {
 					)}
 				</View>
 				<View style={{ flexDirection: 'row' }}>
+					<Icon name="md-time" type="ionicon" size={25} />
+					<Text style={styles.propertyContainer}>{event.duration} horas</Text>
+				</View>
+				<Divider style={{ backgroundColor: '#e9e9e9' }} />
+				<View style={{ flexDirection: 'row' }}>
 					<Icon name="md-pin" type="ionicon" size={25} color="#f44336" />
 					<Text style={styles.propertyContainer}>{event.location.name}</Text>
 				</View>
+				{event.location.category.name === 'Parroquia' && (
+					<View style={{ alignItems: 'center' }}>
+						<Badge
+							value="Contacto de la parroquia"
+							status="primary"
+							textStyle={{ fontSize: 15 }}
+							badgeStyle={{ padding: 7, height: 25, alignItems: 'center' }}
+						/>
+
+						<Text style={{ fontSize: 15 }}>
+							{event.location.contact.name} - {event.location.contact.phone}
+						</Text>
+					</View>
+				)}
+				<Divider style={{ backgroundColor: '#e9e9e9' }} />
 				<View style={{ flexDirection: 'row' }}>
 					<Icon name="md-key" size={24} type="ionicon" color="#009688" />
 					<Text style={styles.propertyContainer}>{event.category.name}</Text>
 				</View>
-				<View style={{ flexDirection: 'row' }}>
-					<Icon name="md-contact" size={24} type="ionicon" color="#e91e63" />
-					<Text style={styles.propertyContainer}>
-						<Text style={styles.propertyName}>Contacto:</Text>{' '}
-						{event.contacts.items.length !== 0 ? (
-							`${event.contacts.items[0].contact.name} ${event.contacts.items[0].contact.phone}`
-						) : (
-							<Text>No tiene contacto</Text>
-						)}
-					</Text>
+				<View>
+					<View style={{ flexDirection: 'row' }}>
+						<Icon name="md-contact" size={24} type="ionicon" color="#e91e63" />
+						<Text style={styles.propertyContainer}>Contactos:</Text>
+					</View>
+					{event.contacts.items.length !== 0 ? (
+						<View>
+							{event.contacts.items.map((contact) => (
+								<Text key={contact.id}>
+									- {contact.contact.name} - {contact.contact.phone}
+								</Text>
+							))}
+						</View>
+					) : (
+						<Text>No tiene contacto</Text>
+					)}
 				</View>
 			</ScrollView>
 			<FloatingButtons fab={fab} />

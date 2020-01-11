@@ -14,13 +14,14 @@ class DiaryContainer extends PureComponent {
 
 	fetchEvents = async () => {
 		try {
-			const events = await API.graphql(graphqlOperation(listEvents));
+			const events = await API.graphql(graphqlOperation(listEvents, { limit: 400 }));
+			// console.log(events.data.listEvents.items);
 			this.setState({
 				events: events.data.listEvents.items,
 				loading: false
 			});
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			this.setState({
 				loading: false,
 				error: true

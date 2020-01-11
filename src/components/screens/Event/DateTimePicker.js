@@ -6,7 +6,8 @@ import moment from 'moment';
 
 export default class DatePicker extends Component {
 	state = {
-		show: false
+		showDate: false,
+		shotTime: false
 	};
 
 	// setDate = (event, date) => {
@@ -20,11 +21,12 @@ export default class DatePicker extends Component {
 
 	showDatePicker = () => {
 		this.setState({
-			show: true
+			showDate: true
 		});
 	};
 
 	render() {
+		// console.log(this.props.date);
 		return (
 			<View>
 				<TouchableOpacity onPress={this.showDatePicker}>
@@ -39,18 +41,53 @@ export default class DatePicker extends Component {
 							paddingHorizontal: 15
 						}}
 					>
-						<Text style={{ fontSize: 15 }}>{moment(this.props.date).format('DD/MM/YYYY')}</Text>
+						<Text style={{ fontSize: 15 }}>
+							{moment(this.props.date.replace('Z', '')).format('dddd DD/MM/YYYY [a las] hh:mm A')}
+						</Text>
 					</View>
 				</TouchableOpacity>
 
-				{this.state.show && (
+				{this.state.showDate && (
 					<DateTimePicker
-						value={moment(this.props.date).toDate()}
+						value={new Date(this.props.date)}
 						onChange={(value) => {
 							this.setState({
-								show: false
+								showDate: false,
+								showTime: true
 							});
-							this.props.handleDateChange(value);
+							console.log(this.props.date);
+							if (value.type === 'set') {
+								var dateComponents = this.props.date.split('T');
+								var newDate = `${moment(value.nativeEvent.timestamp).format(
+									'YYYY-MM-DD'
+								)}T${dateComponents[1]}`;
+								this.props.handleDateChange(newDate);
+							}
+						}}
+					/>
+				)}
+
+				{this.state.showTime && (
+					<DateTimePicker
+						mode="time"
+						value={moment(this.props.date.replace('Z', '')).toDate()}
+						onChange={(value) => {
+							this.setState({
+								showDate: false,
+								showTime: false
+							});
+							if (value.type === 'set') {
+								var dateComponents = this.props.date.split('T');
+								let hour = moment(value.nativeEvent.timestamp)
+									.subtract(4, 'hours')
+									.toISOString()
+									.split('T')[1]
+									.replace('Z', '');
+								console.log(hour);
+								var newDate = `${dateComponents[0]}T${hour}`;
+								// console.log(newDate);
+								this.props.handleDateChange(newDate);
+							}
 						}}
 					/>
 				)}
