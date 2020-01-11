@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { Text, View, Platform, Picker, TouchableOpacity } from 'react-native';
+import { Text, View, Platform, Picker, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Button, Dialog, Portal } from 'react-native-paper';
 import MultiSelect from 'react-native-multiple-select';
 import { TextInput } from 'react-native';
+import {} from 'react-native-gesture-handler';
+import { Icon } from 'react-native-elements';
+
+const { height } = Dimensions.get('window');
 
 class CustomMultiPicker extends Component {
 	state = {
@@ -36,6 +40,7 @@ class CustomMultiPicker extends Component {
 	};
 
 	componentDidMount = () => {
+		// console.log(this.props.elements);
 		this.setState({
 			elements: this.props.elements,
 			filteredElements: this.props.elements,
@@ -81,16 +86,27 @@ class CustomMultiPicker extends Component {
 					<Dialog visible={this.state.visible} onDismiss={this._hideDialog}>
 						<Dialog.Content>
 							<TextInput onChangeText={this.filterEvents} placeholder="Buscar elementos" />
-							{this.state.filteredElements.map((element) => (
-								<TouchableOpacity onPress={() => this.onSelectElement(element.id)} key={element.id}>
-									<View style={{ paddingVertical: 10, paddingHorizontal: 7 }}>
-										<Text style={{ fontSize: 17, lineHeight: 20, maxHeight: 20 }}>
-											{element.name}{' '}
-											{this.state.selectedElements.includes(element.id) && 'seleccionado'}
-										</Text>
-									</View>
-								</TouchableOpacity>
-							))}
+							<ScrollView style={{ maxHeight: height * 0.4 }}>
+								{this.state.filteredElements.map((element) => (
+									<TouchableOpacity onPress={() => this.onSelectElement(element.id)} key={element.id}>
+										<View
+											style={{
+												paddingVertical: 10,
+												paddingHorizontal: 7,
+												flexDirection: 'row',
+												justifyContent: 'space-between'
+											}}
+										>
+											<Text style={{ fontSize: 17, lineHeight: 20, maxHeight: 20 }}>
+												{element.name}
+											</Text>
+											{this.state.selectedElements.includes(element.id) && (
+												<Icon type="ionicon" name="md-checkmark" color="blue" />
+											)}
+										</View>
+									</TouchableOpacity>
+								))}
+							</ScrollView>
 							<Button onPress={this._hideDialog}>Aceptar</Button>
 						</Dialog.Content>
 					</Dialog>
