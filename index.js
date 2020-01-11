@@ -9,8 +9,11 @@ import App from './App';
 
 import { name as appName } from './app.json';
 import ErrorBoundary from './src/components/screens/ErrorBoundary';
+import moment from 'moment';
+import 'moment/locale/es';
 
 YellowBox.ignoreWarnings([ 'Require cycle' ]);
+moment.locale('es');
 class Main extends React.Component {
 	render() {
 		return (

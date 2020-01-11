@@ -5,11 +5,19 @@ export const getLocation = `query GetLocation($id: ID!) {
   getLocation(id: $id) {
     id
     name
-    events {
-      items {
-        id
+    category {
+      id
+      name
+      description
+      module
+    }
+    contact {
+      id
+      name
+      phone
+      events {
+        nextToken
       }
-      nextToken
     }
   }
 }
@@ -23,8 +31,16 @@ export const listLocations = `query ListLocations(
     items {
       id
       name
-      events {
-        nextToken
+      category {
+        id
+        name
+        description
+        module
+      }
+      contact {
+        id
+        name
+        phone
       }
     }
     nextToken
@@ -68,6 +84,7 @@ export const getCategory = `query GetCategory($id: ID!) {
     id
     name
     description
+    module
   }
 }
 `;
@@ -81,6 +98,7 @@ export const listCategorys = `query ListCategorys(
       id
       name
       description
+      module
     }
     nextToken
   }
@@ -89,37 +107,43 @@ export const listCategorys = `query ListCategorys(
 export const getEvent = `query GetEvent($id: ID!) {
   getEvent(id: $id) {
     id
-    name
-    category {
-      id
-      name
-      description
-    }
-    date
-    description
-    location {
-      items {
+      name,
+      category{
         id
-        location{
+        name
+        description
+        module
+      }
+      date
+      description
+      location{
+        id
+        name
+        category{
           id
           name
+          description
+          module
         }
-      }
- 
-    }
-    contacts {
-      items {
-        id
         contact{
-          id 
+          id
           name
           phone
         }
       }
-     
-    }
-    secretary
-    priest
+      contacts{
+        items{
+          id
+          contact{
+            id
+            name
+            phone
+          }
+        }
+      }
+      secretary
+      priest
+      duration
   }
 }
 `;
@@ -129,30 +153,28 @@ export const listEvents = `query ListEvents(
   $nextToken: String
 ) {
   listEvents(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items{
-      id,
-      name,
-      date,
-      description,
-      category{
+    items {
+      id
+      name
+      category {
+        id
         name
-      },
-      location{
-        items{
-          id,
-          location{
-            name
-          }
-        }
-      },
-      contacts{
-        items{
-          contact{
-            name,
-            phone
-          }
-        }
+        description
+        module
       }
+      date
+      description
+      location {
+        id
+        name
+      }
+      contacts {
+        nextToken
+      }
+      secretary
+      priest
+      createdAt
+      duration
     }
     nextToken
   }

@@ -3,13 +3,13 @@ import EventForm from './EventForm';
 import { Text, Alert } from 'react-native';
 import { API, graphqlOperation } from 'aws-amplify';
 import { getEvent, listCategorys, listContacts, listLocations } from '../../../amplify/queries';
-import { updateEvent, updateEventLocations, updateEventContacts } from '../../../amplify/mutations';
+import { updateEvent, createEventContacts, deleteEventContacts } from '../../../amplify/mutations';
 import Spinner from '../../ActivityIndicator';
 
 export default function EditEventContainer(props) {
 	const { id } = props.navigation.state.params;
 	const [ event, setEvent ] = React.useState({});
-	const [ relationKeys, setRelationKeys ] = React.useState({});
+	const [ relations, setRelations ] = React.useState([]);
 	const [ categories, setCategories ] = React.useState([]);
 	const [ contacts, setContacts ] = React.useState([]);
 	const [ locations, setLocations ] = React.useState([]);
@@ -19,9 +19,9 @@ export default function EditEventContainer(props) {
 	React.useEffect(
 		() => {
 			const fetchEvent = async () => await API.graphql(graphqlOperation(getEvent, { id }));
-			const fetchCategories = async () => await API.graphql(graphqlOperation(listCategorys));
-			const fetchContacts = async () => await API.graphql(graphqlOperation(listContacts));
-			const fetchLocations = async () => await API.graphql(graphqlOperation(listLocations));
+			const fetchCategories = async () => await API.graphql(graphqlOperation(listCategorys, { limit: 400 }));
+			const fetchContacts = async () => await API.graphql(graphqlOperation(listContacts, { limit: 400 }));
+			const fetchLocations = async () => await API.graphql(graphqlOperation(listLocations, { limit: 400 }));
 
 			const fetchData = async () => {
 				const [ eventAPI, categoriesAPI, contactsAPI, locationsAPI ] = await Promise.all([
@@ -31,43 +31,16 @@ export default function EditEventContainer(props) {
 					fetchLocations()
 				]);
 
+				setRelations(eventAPI.data.getEvent.contacts.items);
 				setCategories(categoriesAPI.data.listCategorys.items);
 				setContacts(contactsAPI.data.listContacts.items);
 				setLocations(locationsAPI.data.listLocations.items);
-				//console.log(eventAPI);
-				setRelationKeys({
-					locationKey: () => {
-						if (eventAPI.data.getEvent.location.items.length !== 0) {
-							return eventAPI.data.getEvent.location.items[0].id;
-						} else {
-							return '';
-						}
-					},
-					contactKey: () => {
-						if (eventAPI.data.getEvent.contacts.items.length !== 0) {
-							return eventAPI.data.getEvent.contacts.items[0].id;
-						} else {
-							return '';
-						}
-					}
-				});
+
 				setEvent({
 					...eventAPI.data.getEvent,
 					category: eventAPI.data.getEvent.category.id,
-					contact: () => {
-						if (eventAPI.data.getEvent.contacts.items.length !== 0) {
-							return eventAPI.data.getEvent.contacts.items[0].contact.id;
-						} else {
-							return '';
-						}
-					},
-					location: () => {
-						if (eventAPI.data.getEvent.location.items.length !== 0) {
-							return eventAPI.data.getEvent.location.items[0].location.id;
-						} else {
-							return '';
-						}
-					}
+					location: eventAPI.data.getEvent.location.id,
+					contacts: eventAPI.data.getEvent.contacts.items.map((contact) => contact.contact.id)
 				});
 				setLoading(false);
 			};
@@ -83,21 +56,14 @@ export default function EditEventContainer(props) {
 	);
 
 	const onSubmit = async (data) => {
-		//console.log(data);
 		const eventData = {
 			id: event.id,
 			name: data.name,
 			description: data.description,
 			date: data.date,
-			eventCategoryId: data.category
-		};
-		const eventLocationData = {
-			id: relationKeys.locationKey,
-			eventLocationsLocationId: data.location
-		};
-		const eventContactData = {
-			id: relationKeys.contactKey,
-			eventContactsContactId: data.contact
+			duration: data.duration,
+			eventCategoryId: data.category,
+			eventLocationId: data.location
 		};
 		try {
 			await API.graphql(
@@ -106,17 +72,24 @@ export default function EditEventContainer(props) {
 				})
 			);
 
-			await API.graphql(
-				graphqlOperation(updateEventLocations, {
-					input: eventLocationData
-				})
-			);
+			relations.forEach((relation) => {
+				let exists = data.contacts.findIndex((contact) => contact === relation.contact.id);
+				if (exists === -1) {
+					API.graphql(graphqlOperation(deleteEventContacts, { input: { id: relation.id } }));
+				}
+			});
 
-			await API.graphql(
-				graphqlOperation(updateEventContacts, {
-					input: eventContactData
-				})
-			);
+			data.contacts.forEach((contact) => {
+				let exists = relations.findIndex((relation) => relation.contact.id === contact);
+				if (exists === -1) {
+					const inputEventContact = {
+						eventContactsEventId: event.id,
+						eventContactsContactId: contact
+					};
+
+					API.graphql(graphqlOperation(createEventContacts, { input: inputEventContact }));
+				}
+			});
 
 			Alert.alert('actualizado correctamente', '', [
 				{

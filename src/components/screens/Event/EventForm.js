@@ -6,23 +6,21 @@ import moment from 'moment';
 import { Button } from 'react-native-elements';
 import { TextInput, Title } from 'react-native-paper';
 import CustomPicker from '../Picker';
+import CustomMultiPicker from '../Picker/CustomMultiPicker';
 
 const EventForm = ({ event, categories, locations, contacts, setEvent, onSubmit, action }) => {
 	const { register, setValue, handleSubmit, errors, formState } = useForm({
 		defaultValues: event
 	});
 
-	const handleDateChange = (value) => {
-		if (value.type === 'set') {
-			let date = moment(value.nativeEvent.timestamp).format('YYYY-MM-DD');
-			setEvent({
-				...event,
-				date
-			});
-			setValue('date', date);
-		}
+	const handleDateChange = (date) => {
+		setEvent({
+			...event,
+			date
+		});
+		setValue('date', date);
 	};
-
+	// console.log(event);
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -65,6 +63,24 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, onSubmit,
 				/>
 				{errors.description && <Text>Este campo es requerido</Text>}
 
+				<TextInput
+					keyboardType="number-pad"
+					ref={register({ name: 'duration' }, { required: true })}
+					onChangeText={(text) => setValue('duration', text)}
+					label="Duración del evento en horas"
+					defaultValue={event.duration}
+					mode="outlined"
+					autoCompleteType="off"
+					style={styles.textInput}
+					theme={{
+						colors: {
+							primary: '#68c462'
+						}
+					}}
+					returnKeyType="next"
+				/>
+				{errors.firstName && <Text>Este campo es requerido</Text>}
+
 				<CustomPicker
 					ref={register({ name: 'category' })}
 					setEvent={setEvent}
@@ -79,15 +95,16 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, onSubmit,
 					date={event.date}
 					handleDateChange={handleDateChange}
 					register={register}
+					type="date"
 				/>
 
-				<CustomPicker
-					ref={register({ name: 'contact' })}
+				<CustomMultiPicker
+					ref={register({ name: 'contacts' })}
 					setEvent={setEvent}
 					setValue={setValue}
 					elements={contacts}
 					event={event}
-					propertyName="contact"
+					propertyName="contacts"
 				/>
 
 				<CustomPicker
@@ -103,7 +120,7 @@ const EventForm = ({ event, categories, locations, contacts, setEvent, onSubmit,
 					<Button
 						loading={formState.isSubmitting}
 						onPress={handleSubmit(onSubmit)}
-						disabled={formState.isSubmitting || formState.isSubmitted}
+						//disabled={formState.isSubmitting || formState.isSubmitted}
 						title={action === 'update' ? 'Guardar' : 'Crear'}
 					/>
 				</View>

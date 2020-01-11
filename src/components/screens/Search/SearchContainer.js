@@ -33,7 +33,7 @@ class SearchContainer extends Component {
 
 	fetchEvents = async () => {
 		try {
-			const events = await API.graphql(graphqlOperation(listEvents));
+			const events = await API.graphql(graphqlOperation(listEvents, { limit: 400 }));
 			const ordenedEvents = events.data.listEvents.items.sort((a, b) => {
 				if (a.date > b.date) {
 					return 1;

@@ -16,9 +16,9 @@ const NewEventContainer = ({ navigation }) => {
 
 	React.useEffect(() => {
 		//const fetchEvent = async () => await API.graphql(graphqlOperation(getEvent, { id }));
-		const fetchCategories = async () => await API.graphql(graphqlOperation(listCategorys));
-		const fetchContacts = async () => await API.graphql(graphqlOperation(listContacts));
-		const fetchLocations = async () => await API.graphql(graphqlOperation(listLocations));
+		const fetchCategories = async () => await API.graphql(graphqlOperation(listCategorys, { limit: 400 }));
+		const fetchContacts = async () => await API.graphql(graphqlOperation(listContacts, { limit: 400 }));
+		const fetchLocations = async () => await API.graphql(graphqlOperation(listLocations, { limit: 400 }));
 
 		const fetchData = async () => {
 			const [ /* eventAPI, */ categoriesAPI, contactsAPI, locationsAPI ] = await Promise.all([
@@ -30,10 +30,10 @@ const NewEventContainer = ({ navigation }) => {
 
 			setEvent({
 				...event,
-				date: navigation.state.params.day,
+				date: `${navigation.state.params.day}T00:00:01`,
 				category: categoriesAPI.data.listCategorys.items[0].id,
 				location: locationsAPI.data.listLocations.items[0].id,
-				contact: contactsAPI.data.listContacts.items[0].id
+				contacts: []
 			});
 
 			setCategories(categoriesAPI.data.listCategorys.items);
@@ -55,7 +55,9 @@ const NewEventContainer = ({ navigation }) => {
 			name: data.name,
 			description: data.description,
 			date: data.date,
-			eventCategoryId: data.category
+			eventCategoryId: data.category,
+			duration: data.duration,
+			eventLocationId: data.location
 		};
 
 		try {
@@ -64,26 +66,20 @@ const NewEventContainer = ({ navigation }) => {
 					input: eventData
 				})
 			);
+			if (data.contacts) {
+				data.contacts.forEach(async (contact) => {
+					const eventContactData = {
+						eventContactsEventId: createdEvent.data.createEvent.id,
+						eventContactsContactId: contact
+					};
 
-			const eventLocationData = {
-				eventLocationsEventId: createdEvent.data.createEvent.id,
-				eventLocationsLocationId: data.location
-			};
-			const eventContactData = {
-				eventContactsEventId: createdEvent.data.createEvent.id,
-				eventContactsContactId: data.contact
-			};
-
-			await API.graphql(
-				graphqlOperation(createEventLocations, {
-					input: eventLocationData
-				})
-			);
-			await API.graphql(
-				graphqlOperation(createEventContacts, {
-					input: eventContactData
-				})
-			);
+					await API.graphql(
+						graphqlOperation(createEventContacts, {
+							input: eventContactData
+						})
+					);
+				});
+			}
 
 			Alert.alert('Creado correctamente', '', [
 				{
@@ -94,7 +90,7 @@ const NewEventContainer = ({ navigation }) => {
 				}
 			]);
 		} catch (error) {
-			//console.log(error);
+			console.log(error);
 			Alert.alert('Ha ocurrido un error', 'Intentelo nuevamente', [
 				{
 					text: 'OK'

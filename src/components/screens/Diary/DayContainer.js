@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Text, FlatList } from 'react-native';
 import EventItem from './EventItem';
 import FloattingButtons from '../../Floating buttoms';
+import moment from 'moment';
 
 const DayContainer = ({ navigation }) => {
 	const { events, day } = navigation.state.params;
-	const eventsFiltered = events.filter((event) => event.date === day);
+	const eventsFiltered = events.filter((event) => moment(event.date).format('YYYY-MM-DD') === day);
 
 	const floattingButtonData = {
 		fabIcon: 'md-add',
