@@ -68,7 +68,9 @@ export default class SignInScreen extends React.Component {
 		return (
 			<ScrollView>
 				<View style={styles.container_}>
-					<View style={styles.logoContiner} />
+					<View style={styles.logoContiner}>
+						<Image style={styles.logo} source={require( '../../../images/logo.jpeg')} />
+					</View>
 					<View style={styles.container}>
 						{/* <Text style={styles.welcome}>WELCOME</Text> */}
 						<View style={{ height: 30 }} />
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		width: 300,
-		height: 60,
+		height: 200,
 		resizeMode: 'contain'
 	},
 	forgotPassword: {
@@ -159,7 +161,7 @@ const styles = StyleSheet.create({
 		width: 330
 	},
 	logoContiner: {
-		height: 170,
+		height: 250,
 		flexDirection: 'column',
 		justifyContent: 'flex-end'
 	},
